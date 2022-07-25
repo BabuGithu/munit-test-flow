@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:servicenow="http://www.mulesoft.org/schema/mule/servicenow" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/servicenow http://www.mulesoft.org/schema/mule/servicenow/current/mule-servicenow.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d5789733-6077-4e1f-bb76-c5202ced319c" >
+		<http:listener-connection host="0.0.0.0" port="8083" />
+	</http:listener-config>
+	<flow name="munit-test-flowFlow" doc:id="19a528ae-2063-4e14-bd45-d6751b134c14" >
+		<http:listener doc:name="Listener" doc:id="48277a9f-eca7-4bc1-ba65-19fa83b0bc3c" config-ref="HTTP_Listener_config" path="/munit"/>
+		<logger level="INFO" doc:name="Logger" doc:id="5580628d-afa1-42d0-9228-3047624ed58e" message="Start the munit flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="98ca8079-b46b-4bce-aa21-92e6d85421f5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+"message": "welcome to mule" ++ (attributes.queryParams.firstName as String default ""++ " " ++ attributes.queryParams.lastName as String default "")	
+
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="d8b321e3-3e9c-487e-807e-543fa0e569b2" message="complete the munit flow"/>
+	</flow>
+</mule>
